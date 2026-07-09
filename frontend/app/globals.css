@@ -1,0 +1,81 @@
+@import "../styles/theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 50% 98%;
+    --foreground: 214 45% 16%;
+    --card: 0 0% 100%;
+    --card-foreground: 214 45% 16%;
+    --primary: 207 100% 43%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 205 100% 97%;
+    --secondary-foreground: 206 90% 24%;
+    --muted: 210 28% 96%;
+    --muted-foreground: 215 18% 40%;
+    --accent: 203 100% 95%;
+    --accent-foreground: 206 90% 24%;
+    --border: 210 26% 88%;
+    --input: 210 26% 88%;
+    --ring: 207 100% 43%;
+    --radius: 1.25rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    background-color: #f5f9fc;
+    background-image:
+      radial-gradient(circle at top left, rgba(14, 116, 232, 0.08), transparent 26%),
+      radial-gradient(circle at right center, rgba(56, 189, 248, 0.08), transparent 24%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 249, 253, 0.98));
+  }
+}
+
+@layer utilities {
+  .page-shell {
+    @apply relative overflow-hidden rounded-[2rem] border border-slate-200/70 bg-white shadow-panel;
+  }
+
+  .surface-card {
+    @apply rounded-[1.75rem] border border-slate-200/70 bg-white shadow-panel;
+  }
+
+  .surface-subtle {
+    @apply rounded-[1.5rem] border border-slate-200/70 bg-slate-50;
+  }
+
+  .surface-azure {
+    @apply rounded-[1.5rem] border border-sky-100 bg-sky-50;
+  }
+
+  .table-shell {
+    @apply overflow-hidden rounded-[1.5rem] border border-slate-200/70 bg-white;
+  }
+
+  [data-density="compact"] .page-shell {
+    border-radius: 1.6rem;
+  }
+
+  [data-density="compact"] .surface-card {
+    border-radius: 1.45rem;
+  }
+
+  [data-density="compact"] .surface-subtle,
+  [data-density="compact"] .surface-azure,
+  [data-density="compact"] .table-shell {
+    border-radius: 1.2rem;
+  }
+
+  [data-density="compact"] .table-shell th,
+  [data-density="compact"] .table-shell td {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+}

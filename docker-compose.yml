@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-MediIntel}
+        NEXT_PUBLIC_API_BASE_PATH: ${NEXT_PUBLIC_API_BASE_PATH:-/api/backend/v1}
+        NEXT_PUBLIC_LOGIN_REDIRECT: ${NEXT_PUBLIC_LOGIN_REDIRECT:-/dashboard}
+        NEXT_PRIVATE_BACKEND_ORIGIN: ${NEXT_PRIVATE_BACKEND_ORIGIN:-http://127.0.0.1:8000}
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/app/chromadb
+      - uploads_data:/app/uploads
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-medintel}
+      POSTGRES_USER: ${POSTGRES_USER:-medintel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-medintel}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-medintel} -d ${POSTGRES_DB:-medintel}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  chromadb_data:
+  uploads_data:

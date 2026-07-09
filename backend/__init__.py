@@ -1,0 +1,2 @@
+"""MediIntel backend package."""
+

@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MediIntel UI Preview</title>
+    <style>
+      :root {
+        --bg: #f3f8ff;
+        --panel: #ffffff;
+        --panel-soft: #f7fbff;
+        --line: #d9e6f7;
+        --text: #0f172a;
+        --muted: #64748b;
+        --blue: #0f75ff;
+        --blue-soft: #eaf4ff;
+        --blue-deep: #0c57c7;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --critical: #ef4444;
+        --shadow: 0 18px 55px rgba(15, 47, 109, 0.10);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+        background:
+          radial-gradient(circle at top right, rgba(15, 117, 255, 0.10), transparent 24%),
+          linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+        color: var(--text);
+      }
+
+      .canvas {
+        width: 1600px;
+        min-height: 900px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 24px;
+        min-height: 844px;
+      }
+
+      .sidebar {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(217, 230, 247, 0.85);
+        box-shadow: var(--shadow);
+        border-radius: 30px;
+        padding: 26px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 26px;
+      }
+
+      .brand {
+        padding: 8px 6px 2px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 30px;
+        letter-spacing: -0.04em;
+      }
+
+      .brand p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .nav {
+        display: grid;
+        gap: 10px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        color: #23415e;
+        font-weight: 600;
+        background: transparent;
+      }
+
+      .nav-item.active {
+        background: linear-gradient(180deg, #eef6ff 0%, #e0f0ff 100%);
+        color: var(--blue-deep);
+        box-shadow: inset 0 0 0 1px #cfe5ff;
+      }
+
+      .nav-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: currentColor;
+        opacity: 0.65;
+      }
+
+      .ops-card {
+        margin-top: auto;
+        border-radius: 24px;
+        padding: 18px;
+        background: linear-gradient(180deg, #0f75ff 0%, #0b61d8 100%);
+        color: #fff;
+      }
+
+      .ops-card .tag {
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        border: 1px solid rgba(255,255,255,0.24);
+        border-radius: 999px;
+        padding: 7px 10px;
+      }
+
+      .ops-card h3 {
+        margin: 16px 0 10px;
+        font-size: 20px;
+        line-height: 1.25;
+      }
+
+      .ops-card p {
+        margin: 0;
+        font-size: 13px;
+        color: rgba(255,255,255,0.86);
+        line-height: 1.6;
+      }
+
+      .main {
+        display: grid;
+        grid-template-rows: auto auto 1fr;
+        gap: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      .search {
+        flex: 1;
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(217, 230, 247, 0.85);
+        border-radius: 18px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        color: #8aa4c5;
+        box-shadow: var(--shadow);
+      }
+
+      .status-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .pill {
+        padding: 11px 14px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.94);
+        border: 1px solid rgba(217, 230, 247, 0.85);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #335a84;
+      }
+
+      .dashboard {
+        display: grid;
+        gap: 20px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: rgba(255,255,255,0.96);
+        border: 1px solid rgba(217, 230, 247, 0.85);
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .eyebrow {
+        color: #6a8bad;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: 800;
+      }
+
+      .hero h2 {
+        margin: 18px 0 8px;
+        font-size: 42px;
+        letter-spacing: -0.05em;
+      }
+
+      .hero .mission {
+        color: var(--blue-deep);
+        font-weight: 700;
+        margin-top: 6px;
+      }
+
+      .hero p {
+        margin: 14px 0 0;
+        max-width: 760px;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 15px;
+      }
+
+      .hero-stats {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .mini-panel {
+        background: var(--panel-soft);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 16px;
+      }
+
+      .mini-panel .label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .mini-panel .value {
+        margin-top: 8px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .cta {
+        background: linear-gradient(180deg, #0f75ff 0%, #0b61d8 100%);
+        color: white;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 290px;
+      }
+
+      .cta h3 {
+        margin: 14px 0 8px;
+        font-size: 34px;
+        letter-spacing: -0.04em;
+      }
+
+      .cta p {
+        margin: 0;
+        color: rgba(255,255,255,0.88);
+        line-height: 1.7;
+        font-size: 15px;
+      }
+
+      .cta-button {
+        margin-top: 26px;
+        background: white;
+        color: #0f75ff;
+        border-radius: 18px;
+        padding: 15px 18px;
+        text-align: center;
+        font-weight: 800;
+        box-shadow: 0 12px 26px rgba(0,0,0,0.08);
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+
+      .kpi {
+        padding: 24px;
+      }
+
+      .kpi .title {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .kpi .number {
+        margin-top: 12px;
+        font-size: 42px;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+      }
+
+      .kpi .caption {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #5d738b;
+      }
+
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 1.08fr 0.92fr;
+        gap: 20px;
+      }
+
+      .section {
+        padding: 24px;
+      }
+
+      .section h4 {
+        margin: 0;
+        font-size: 22px;
+        letter-spacing: -0.03em;
+      }
+
+      .section .desc {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .chart {
+        margin-top: 20px;
+        height: 270px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(180deg, rgba(15,117,255,0.10), rgba(15,117,255,0.01)),
+          linear-gradient(180deg, rgba(255,255,255,0.96), rgba(243,248,255,0.96));
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gridline {
+        position: absolute;
+        left: 18px;
+        right: 18px;
+        height: 1px;
+        background: rgba(171, 197, 231, 0.55);
+      }
+
+      .line {
+        position: absolute;
+        left: 30px;
+        right: 30px;
+        bottom: 44px;
+        height: 150px;
+      }
+
+      .line svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .legend {
+        position: absolute;
+        left: 22px;
+        right: 22px;
+        bottom: 16px;
+        display: flex;
+        justify-content: space-between;
+        color: #6a84a0;
+        font-size: 12px;
+      }
+
+      .table-card table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 18px;
+        font-size: 13px;
+      }
+
+      .table-card th {
+        text-align: left;
+        color: #7188a2;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        padding: 0 0 12px;
+      }
+
+      .table-card td {
+        padding: 14px 0;
+        border-top: 1px solid rgba(217, 230, 247, 0.75);
+      }
+
+      .risk-badge {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .risk-badge.critical {
+        color: #b91c1c;
+        background: #fee2e2;
+      }
+
+      .risk-badge.watch {
+        color: #92400e;
+        background: #fef3c7;
+      }
+
+      .activity-card {
+        background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+      }
+
+      .activity-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .activity-item {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 16px;
+        background: rgba(255,255,255,0.92);
+      }
+
+      .activity-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .activity-item h5 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .activity-item p {
+        margin: 8px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .state {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 7px 11px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .state.running {
+        color: var(--blue-deep);
+        background: var(--blue-soft);
+      }
+
+      .state.done {
+        color: #166534;
+        background: #dcfce7;
+      }
+
+      .state.watch {
+        color: #92400e;
+        background: #fef3c7;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: currentColor;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .timeline {
+        margin-top: 16px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 0;
+        border-top: 1px solid rgba(217, 230, 247, 0.75);
+        font-size: 14px;
+      }
+
+      .timeline-item:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+
+      .timeline-item .meta {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .agent-panel {
+        position: absolute;
+        right: 34px;
+        top: 96px;
+        width: 440px;
+        min-height: 600px;
+        border-radius: 28px;
+        background: rgba(7, 19, 44, 0.97);
+        border: 1px solid rgba(135, 184, 255, 0.20);
+        box-shadow: 0 26px 60px rgba(2, 12, 31, 0.34);
+        padding: 22px;
+        color: #eff6ff;
+      }
+
+      .agent-panel .ai-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .agent-panel h3 {
+        margin: 14px 0 8px;
+        font-size: 28px;
+        letter-spacing: -0.04em;
+      }
+
+      .agent-panel .sub {
+        color: rgba(219, 234, 254, 0.78);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 18px 0 20px;
+      }
+
+      .suggestions span {
+        padding: 10px 12px;
+        border-radius: 999px;
+        background: rgba(14, 165, 233, 0.12);
+        border: 1px solid rgba(125, 211, 252, 0.22);
+        font-size: 12px;
+        color: #dbeafe;
+      }
+
+      .chat-card {
+        border-radius: 24px;
+        background: #ffffff;
+        color: #0f172a;
+        padding: 20px;
+      }
+
+      .chat-card .header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .chat-card h4 {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.18;
+        letter-spacing: -0.04em;
+      }
+
+      .chat-card p {
+        margin: 14px 0 0;
+        font-size: 14px;
+        color: #4b647d;
+        line-height: 1.7;
+      }
+
+      .stat-strip {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .stat-box {
+        background: #f8fbff;
+        border: 1px solid #deecfb;
+        border-radius: 18px;
+        padding: 14px;
+      }
+
+      .stat-box .n {
+        margin-top: 8px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .agent-contribs {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .contrib {
+        border: 1px solid #deecfb;
+        border-radius: 20px;
+        padding: 16px;
+      }
+
+      .contrib .head {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .contrib strong {
+        font-size: 14px;
+      }
+
+      .contrib small {
+        color: #57718b;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .composer {
+        margin-top: 18px;
+        border-radius: 18px;
+        border: 1px solid rgba(147, 197, 253, 0.18);
+        background: rgba(255,255,255,0.06);
+        padding: 16px;
+        color: #cfe3ff;
+      }
+
+      .composer .send {
+        margin-top: 12px;
+        display: inline-block;
+        background: white;
+        color: var(--blue);
+        border-radius: 14px;
+        padding: 11px 14px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="canvas">
+      <div class="shell">
+        <aside class="sidebar">
+          <div class="brand">
+            <h1>MediIntel</h1>
+            <p>Predict. Prevent. Procure.<br />Autonomous hospital operations platform.</p>
+          </div>
+
+          <nav class="nav">
+            <div class="nav-item active"><span class="nav-dot"></span>Dashboard</div>
+            <div class="nav-item"><span class="nav-dot"></span>AI Workspace</div>
+            <div class="nav-item"><span class="nav-dot"></span>Knowledge Repository</div>
+            <div class="nav-item"><span class="nav-dot"></span>Procurement</div>
+            <div class="nav-item"><span class="nav-dot"></span>Approvals</div>
+            <div class="nav-item"><span class="nav-dot"></span>Alerts</div>
+            <div class="nav-item"><span class="nav-dot"></span>Audit Logs</div>
+            <div class="nav-item"><span class="nav-dot"></span>Settings</div>
+          </nav>
+
+          <div class="ops-card">
+            <div class="tag">AI Workspace</div>
+            <h3>Never Waste. Never Wait.</h3>
+            <p>Master agent monitors shortages, approvals, procurement readiness, and grounded hospital policy context.</p>
+          </div>
+        </aside>
+
+        <main class="main">
+          <div class="topbar">
+            <div class="search">Search medicines, suppliers, alerts, approvals, or AI traces</div>
+            <div class="status-row">
+              <div class="pill">12 Critical Alerts</div>
+              <div class="pill">26 Pending Approvals</div>
+              <div class="pill">AI Live</div>
+            </div>
+          </div>
+
+          <section class="dashboard">
+            <div class="hero-grid">
+              <div class="card hero">
+                <div class="eyebrow">Executive Overview</div>
+                <h2>Hello Saikiran Reddy</h2>
+                <div class="mission">Current Mission</div>
+                <p>Prevent medicine shortages before they impact patient care across ICU, Emergency, Pharmacy, Oncology, and specialty continuity lanes.</p>
+                <div class="hero-stats">
+                  <div class="mini-panel">
+                    <div class="label">Hospital</div>
+                    <div class="value">CityCare Multi-Speciality Hospital</div>
+                  </div>
+                  <div class="mini-panel">
+                    <div class="label">Departments</div>
+                    <div class="value">6 active lanes</div>
+                  </div>
+                  <div class="mini-panel">
+                    <div class="label">Beds Covered</div>
+                    <div class="value">420</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card cta">
+                <div>
+                  <div class="eyebrow" style="color: rgba(255,255,255,0.80)">AI Workspace</div>
+                  <h3>Ask MediIntel AI</h3>
+                  <p>Launch the AI workspace to review live inventory posture, predict shortages, generate procurement, and validate decisions with traceable agent activity.</p>
+                </div>
+                <div class="cta-button">Ask AI Agent</div>
+              </div>
+            </div>
+
+            <div class="kpis">
+              <div class="card kpi">
+                <div class="title">Critical Medicines</div>
+                <div class="number">18</div>
+                <div class="caption">Items below acceptable continuity buffer.</div>
+              </div>
+              <div class="card kpi">
+                <div class="title">Predicted Shortages (Next 7 Days)</div>
+                <div class="number">26</div>
+                <div class="caption">Forecast-driven risks requiring action.</div>
+              </div>
+              <div class="card kpi">
+                <div class="title">Pending Approvals</div>
+                <div class="number">14</div>
+                <div class="caption">Requests awaiting leadership review.</div>
+              </div>
+              <div class="card kpi">
+                <div class="title">Inventory Health</div>
+                <div class="number">82%</div>
+                <div class="caption">Monitor: buffers are holding with exposure in ICU-critical lanes.</div>
+              </div>
+            </div>
+
+            <div class="layout-grid">
+              <div class="card section">
+                <h4>7 Day Demand Forecast</h4>
+                <div class="desc">Predicted medicine demand across the next seven operating days.</div>
+                <div class="chart">
+                  <div class="gridline" style="top: 48px"></div>
+                  <div class="gridline" style="top: 92px"></div>
+                  <div class="gridline" style="top: 136px"></div>
+                  <div class="gridline" style="top: 180px"></div>
+                  <div class="line">
+                    <svg viewBox="0 0 760 180" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+                          <stop offset="0%" stop-color="#43a4ff" stop-opacity="0.35"></stop>
+                          <stop offset="100%" stop-color="#43a4ff" stop-opacity="0"></stop>
+                        </linearGradient>
+                      </defs>
+                      <path d="M0,124 C52,110 92,100 128,102 C164,104 205,122 253,116 C301,110 337,66 385,60 C433,54 467,81 515,72 C563,63 611,31 664,38 C708,44 733,68 760,56 L760,180 L0,180 Z" fill="url(#g)"></path>
+                      <path d="M0,124 C52,110 92,100 128,102 C164,104 205,122 253,116 C301,110 337,66 385,60 C433,54 467,81 515,72 C563,63 611,31 664,38 C708,44 733,68 760,56" fill="none" stroke="#1683ff" stroke-width="4" stroke-linecap="round"></path>
+                    </svg>
+                  </div>
+                  <div class="legend">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card section table-card">
+                <h4>Top 5 At Risk Medicines</h4>
+                <div class="desc">Prioritized by shortage risk, low runway, and procurement latency.</div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Medicine</th>
+                      <th>Current</th>
+                      <th>Min</th>
+                      <th>Days Left</th>
+                      <th>Risk</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Meropenem 1g</td>
+                      <td>42</td>
+                      <td>118</td>
+                      <td>4</td>
+                      <td><span class="risk-badge critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>Noradrenaline Injection</td>
+                      <td>38</td>
+                      <td>110</td>
+                      <td>5</td>
+                      <td><span class="risk-badge critical">Critical</span></td>
+                    </tr>
+                    <tr>
+                      <td>Heparin Sodium</td>
+                      <td>54</td>
+                      <td>104</td>
+                      <td>7</td>
+                      <td><span class="risk-badge watch">Watch</span></td>
+                    </tr>
+                    <tr>
+                      <td>Albumin 20%</td>
+                      <td>47</td>
+                      <td>98</td>
+                      <td>8</td>
+                      <td><span class="risk-badge watch">Watch</span></td>
+                    </tr>
+                    <tr>
+                      <td>Platelet Support Kit</td>
+                      <td>33</td>
+                      <td>92</td>
+                      <td>6</td>
+                      <td><span class="risk-badge critical">Critical</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="footer-grid">
+              <div class="card section">
+                <h4>Critical Alerts</h4>
+                <div class="desc">Operational continuity signals that need review.</div>
+                <div class="timeline">
+                  <div class="timeline-item">
+                    <div class="risk-badge critical">Critical</div>
+                    <div>Meropenem 1g projected below safe stock in 4 days<br /><span class="meta">Forecast Source</span></div>
+                    <div class="meta">8m ago</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="risk-badge critical">Critical</div>
+                    <div>Approval delay is blocking emergency replenishment<br /><span class="meta">Procurement Source</span></div>
+                    <div class="meta">14m ago</div>
+                  </div>
+                  <div class="timeline-item">
+                    <div class="risk-badge watch">Warning</div>
+                    <div>Near-expiry batches require ICU redistribution<br /><span class="meta">Compliance Source</span></div>
+                    <div class="meta">27m ago</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card section activity-card">
+                <h4>Recent Procurement Activity</h4>
+                <div class="desc">Live review path from AI-generated procurement to leadership approval.</div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <div class="activity-top">
+                      <h5>PO-0041 · Meropenem 1g</h5>
+                      <span class="state running"><span class="dot"></span>Pending</span>
+                    </div>
+                    <p>Requested by Ritika Sharma. Routed to Procurement Manager for emergency release.</p>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-top">
+                      <h5>PO-0037 · Albumin 20%</h5>
+                      <span class="state watch"><span class="dot"></span>Modified</span>
+                    </div>
+                    <p>ETA revised after supplier review. Alternate sourcing under comparison.</p>
+                  </div>
+                  <div class="activity-item">
+                    <div class="activity-top">
+                      <h5>PO-0031 · Noradrenaline Injection</h5>
+                      <span class="state done"><span class="dot"></span>Approved</span>
+                    </div>
+                    <p>Approved for supplier release with 24-hour dispatch commitment.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="agent-panel">
+            <div class="ai-top">
+              <div class="eyebrow" style="color:#7dd3fc">MediIntel AI</div>
+              <div class="pill" style="background: rgba(255,255,255,0.08); border-color: rgba(147,197,253,0.14); color: #dbeafe;">92% Confidence</div>
+            </div>
+            <h3>Inventory control posture prepared for admin</h3>
+            <div class="sub">I continuously monitor inventory, predict shortages, recommend actions, generate procurement, and validate operational decisions.</div>
+
+            <div class="suggestions">
+              <span>Check Inventory</span>
+              <span>Predict Shortages</span>
+              <span>Recommend</span>
+              <span>Procure</span>
+              <span>Validate</span>
+            </div>
+
+            <div class="chat-card">
+              <div class="header">
+                <div>
+                  <div class="eyebrow" style="color:#0f75ff">MediIntel AI</div>
+                  <h4>ICU low stock watchlist prepared</h4>
+                </div>
+                <div class="pill" style="font-size:11px; padding:9px 12px;">Jul 9 · 10:45 AM</div>
+              </div>
+              <p>The agent reviewed live inventory posture, flagged ICU-critical items with less than one week of runway, and recommended procurement for the top exposure cluster.</p>
+
+              <div class="stat-strip">
+                <div class="stat-box">
+                  <div class="label">Medicines Scanned</div>
+                  <div class="n">102</div>
+                </div>
+                <div class="stat-box">
+                  <div class="label">Critical Items</div>
+                  <div class="n">18</div>
+                </div>
+                <div class="stat-box">
+                  <div class="label">Near Expiry</div>
+                  <div class="n">9</div>
+                </div>
+              </div>
+
+              <div class="agent-contribs">
+                <div class="contrib">
+                  <div class="head">
+                    <small>Completed</small>
+                    <strong>Operations Agent</strong>
+                  </div>
+                  <p>Inventory analysed across ICU, Emergency, Pharmacy, and Oncology. Meropenem and Noradrenaline remain the highest continuity risks.</p>
+                </div>
+                <div class="contrib">
+                  <div class="head">
+                    <small>Completed</small>
+                    <strong>Intelligence Agent</strong>
+                  </div>
+                  <p>Seven-day demand signal indicates increased critical-care usage through the weekend with elevated shortage risk in the ICU lane.</p>
+                </div>
+                <div class="contrib">
+                  <div class="head">
+                    <small>Action Ready</small>
+                    <strong>Decision Agent</strong>
+                  </div>
+                  <p>Next best action: release emergency procurement for ICU-critical antibiotics and escalate alternate supplier coverage before end of day.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="composer">
+              Type your query...<br />
+              Show low stock medicines in ICU and recommend next action
+              <div class="send">Send</div>
+            </div>
+          </aside>
+        </main>
+      </div>
+    </div>
+  </body>
+  </html>
