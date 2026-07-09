@@ -1,7 +1,6 @@
 .git/
 .runtime/
 docs/
-frontend/
 uploads/
 __pycache__/
 *.pyc
